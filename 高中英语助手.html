@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高中英语助手 · 必修2 Unit 1 Cultural Heritage</title>
+<style>
+:root{
+  --bg:#faf6f0; --card:#ffffff; --ink:#2b2420; --muted:#7a6f66;
+  --primary:#9a5a2b; --primary-d:#7a4520; --accent:#c98a3e; --tint:#f6e9d8;
+  --green:#3f7d4e; --red:#b4453a; --gold:#d4a843;
+  --line:#e8ddd0; --soft:#f3ece2;
+  --btrack:#3a6a92; --btrack-d:#274c6c;   /* 仅用于错题来源标记(固定) */
+}
+/* A轨：棕（默认，显式声明以与B/R对称） */
+body.theme-a{--primary:#9a5a2b;--primary-d:#7a4520;--accent:#c98a3e;--tint:#f6e9d8;--bg:#faf6f0;--soft:#f3ece2;--line:#e8ddd0;}
+/* B轨：蓝 */
+body.theme-b{--primary:#3a6a92;--primary-d:#274c6c;--accent:#5b8cb0;--tint:#e6eff6;--bg:#f1f4f8;--soft:#e7edf3;--line:#d8e1ea;}
+/* 总评：红 (与A/B相近明度饱和度的暖红) */
+body.theme-r{--primary:#b0463a;--primary-d:#8a342a;--accent:#d2856e;--tint:#f6e4df;--bg:#f8f1ef;--soft:#f3e7e3;--line:#ecdcd7;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased}
+.en{font-family:Georgia,"Times New Roman",serif}
+header{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 1px 8px rgba(0,0,0,.05),inset 0 -3px 0 var(--accent)}
+.topbar{max-width:1000px;margin:0 auto;padding:14px 18px 10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:16px;color:var(--primary-d);display:flex;align-items:center;gap:8px}
+.brand .dot{width:11px;height:11px;border-radius:50%;background:var(--accent)}
+.unit-pick{font-size:13px;padding:7px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);cursor:pointer;font-weight:600;max-width:260px}
+.track-tabs{display:flex;gap:2px;margin-left:auto;background:var(--soft);border-radius:11px;padding:3px}
+.tt{border:none;background:transparent;padding:9px 16px;border-radius:9px;cursor:pointer;font-size:14px;color:var(--muted);font-weight:700;transition:.2s}
+.tt.active{background:var(--card);color:var(--primary-d);box-shadow:0 1px 5px rgba(0,0,0,.1)}
+.subtabs{max-width:1000px;margin:0 auto;padding:14px 18px 22px;display:flex;gap:8px;flex-wrap:wrap}
+.st{border:1.5px solid var(--line);background:var(--card);padding:8px 16px;border-radius:20px;cursor:pointer;font-size:13px;color:var(--muted);font-weight:600;transition:.15s}
+.st.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+main{max-width:1000px;margin:0 auto;padding:22px 18px 80px}
+.panel{display:none}.panel.active{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:16px}
+.card h2{font-size:18px;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card .sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+.tag{display:inline-block;font-size:11px;padding:2px 9px;border-radius:20px;background:var(--soft);color:var(--primary-d);font-weight:600}
+.tag.hard{background:#fbeeee;color:var(--red)}
+.tag.b{background:var(--tint);color:var(--primary-d)}
+.ratio{font-size:11px;padding:3px 10px;background:var(--soft);color:var(--muted);border-radius:20px;font-weight:600}
+.passage p{text-indent:2em;font-size:16px;margin-bottom:10px;color:#3a322c}
+.passage .hl{background:linear-gradient(transparent 60%,#f5d98a55 60%);cursor:help;border-radius:2px;padding:0 2px;font-weight:600;color:var(--primary-d)}
+.pop{position:fixed;z-index:100;background:#2b2420;color:#fff;padding:9px 13px;border-radius:8px;font-size:13px;max-width:240px;box-shadow:0 6px 24px rgba(0,0,0,.25);pointer-events:none}
+.pop .pw{font-weight:700;color:var(--accent)}
+.gram-box{background:var(--soft);border-left:3px solid var(--accent);padding:13px 17px;border-radius:8px;margin:10px 0}
+.gram-box .ex{font-size:15px;margin:5px 0}
+.gram-box .ex u{text-decoration:underline;text-decoration-color:var(--primary);text-decoration-thickness:2px}
+/* 闪卡 */
+.fc-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.flash{width:330px;max-width:90vw;height:210px;perspective:1200px;cursor:pointer}
+.flash .inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flash.flip .inner{transform:rotateY(180deg)}
+.flash .face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;border:2px solid var(--line)}
+.flash .front{background:var(--card)}
+.flash .back{background:linear-gradient(135deg,var(--primary),var(--primary-d));color:#fff;transform:rotateY(180deg)}
+.flash .word{font-size:32px;font-weight:700;font-family:Georgia,serif}
+.flash .ipa{color:var(--muted);font-size:14px;margin-top:3px}
+.flash .back .pos{font-size:12px;color:#f0d9ad;padding:2px 10px;background:#ffffff22;border-radius:12px}
+.flash .back .gloss{font-size:18px;margin-top:9px;text-align:center}
+.fc-nav{display:flex;gap:10px;align-items:center}
+.fc-count{font-size:13px;color:var(--muted);min-width:56px;text-align:center}
+/* 题目 */
+.q{margin-bottom:18px}.q .stem{font-size:16px;margin-bottom:10px}
+.q .stem .n{display:inline-block;background:var(--primary);color:#fff;width:23px;height:23px;border-radius:50%;text-align:center;line-height:23px;font-size:12px;margin-right:7px}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{padding:10px 13px;border:1.5px solid var(--line);border-radius:9px;cursor:pointer;font-size:15px;transition:.15s;background:var(--card)}
+.opt:hover{border-color:var(--accent);background:var(--soft)}
+.opt.sel{border-color:var(--primary);background:var(--tint)}
+.opt.ok{border-color:var(--green);background:#eaf4ec;color:var(--green);font-weight:600}
+.opt.no{border-color:var(--red);background:#f8ecea;color:var(--red)}
+.fill{display:inline-block;border:none;border-bottom:2px solid var(--primary);background:var(--soft);padding:3px 9px;font-size:15px;border-radius:6px 6px 0 0;min-width:80px;font-family:Georgia,serif;text-align:center}
+.fill:focus{outline:none;background:#fff}
+.feedback{margin-top:9px;font-size:14px;padding:9px 13px;border-radius:8px;display:none}
+.feedback.show{display:block}.feedback.right{background:#eaf4ec;color:var(--green)}.feedback.wrong{background:#f8ecea;color:var(--red)}
+.btn{border:none;background:var(--primary);color:#fff;padding:10px 20px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
+.btn:hover{background:var(--primary-d)}
+.btn.ghost{background:transparent;color:var(--primary-d);border:1.5px solid var(--primary)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.score-line{display:flex;justify-content:space-between;align-items:center;background:var(--soft);padding:10px 15px;border-radius:9px;margin-bottom:12px;font-size:14px}
+.score-line b{color:var(--primary-d);font-size:17px;font-family:Georgia,serif}
+/* 七选五 */
+.qxw-opt{display:inline-block;padding:8px 12px;margin:4px;border:1.5px solid var(--line);border-radius:8px;cursor:pointer;font-size:13px;background:var(--card);transition:.15s}
+.qxw-opt:hover{border-color:var(--primary)}
+.qxw-opt.used{opacity:.35;background:var(--soft)}
+.qxw-opt.picked{border-color:var(--primary);background:var(--tint);font-weight:600}
+.qxw-blank{display:inline-block;min-width:130px;padding:2px 9px;margin:0 3px;border:1.5px dashed var(--primary);border-radius:6px;cursor:pointer;font-size:13px;color:var(--primary-d);background:#fafdff;vertical-align:middle}
+.qxw-blank.filled{border-style:solid;background:var(--tint)}
+.qxw-blank.ok{border-color:var(--green);background:#eaf4ec;color:var(--green)}
+.qxw-blank.no{border-color:var(--red);background:#f8ecea;color:var(--red)}
+.model{background:var(--soft);border-left:3px solid var(--accent);padding:15px 19px;border-radius:8px;margin-top:12px;display:none;font-size:15px;white-space:pre-wrap;line-height:2}
+.model.show{display:block}
+/* 总评 */
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:18px}
+.kpi .k{background:var(--soft);border-radius:10px;padding:14px;text-align:center}
+.kpi .v{font-size:22px;font-weight:700;color:var(--primary-d);font-family:Georgia,serif}
+.kpi .l{font-size:12px;color:var(--muted)}
+.radar-wrap{display:flex;gap:30px;flex-wrap:wrap;justify-content:center}
+.legend{display:flex;flex-direction:column;gap:9px;font-size:14px;align-self:center}
+.legend .li{display:flex;align-items:center;gap:8px}
+.legend .bar{width:10px;height:10px;border-radius:2px}
+.errlist .ei{padding:10px 13px;background:var(--soft);border-radius:8px;margin-bottom:8px;font-size:14px}
+.errlist .ei .et{font-size:11px;padding:1px 7px;border-radius:10px;margin-right:5px;font-weight:600}
+.errlist .ei .et.a{background:#f7ede0;color:var(--primary-d)}
+.errlist .ei .et.b{background:#eaf0f4;color:var(--btrack-d)}
+.tip{font-size:13px;color:var(--muted);background:var(--soft);padding:10px 14px;border-radius:8px;margin-top:8px}
+.coming{text-align:center;padding:50px 20px;color:var(--muted)}
+.coming .big{font-size:42px;margin-bottom:10px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+@media(max-width:600px){.topbar{padding:9px}.unit-pick{max-width:100%}.track-tabs{width:100%;justify-content:space-between}.tt{padding:7px 9px;font-size:12px;flex:1}.card{padding:18px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span>高中英语助手</div>
+    <select class="unit-pick" id="unitPicker">
+      <option value="b2-u1">必修2 · Unit 1 · Cultural Heritage</option>
+      <option value="b2-u2" disabled>必修2 · Unit 2 · Wildlife Protection（敬请期待）</option>
+      <option value="b2-u3" disabled>必修2 · Unit 3 · The Internet（敬请期待）</option>
+      <option value="more" disabled>… 其余 33 个单元</option>
+    </select>
+    <div class="track-tabs">
+      <button class="tt active" data-track="a">📚 A轨 课本同步</button>
+      <button class="tt" data-track="b">✏️ B轨 题型突破</button>
+      <button class="tt" data-track="r">📊 总评</button>
+    </div>
+  </div>
+  <div class="subtabs" id="subtabs"></div>
+</header>
+
+<main>
+<!-- ============ A 轨 ============ -->
+<div class="panel active" data-track-panel="a">
+  <div id="a-learn" class="card st-panel">
+    <h2>课文精读 <span class="tag">Reading & Thinking</span></h2>
+    <div class="sub">FROM PROBLEMS TO SOLUTIONS — 阿斯旺大坝与文化遗产保护。点击高亮词查看释义。</div>
+    <div class="passage en">
+      <p>Economic development is necessary if we want to improve society. There comes a time when the old must <span class="hl" data-w="give way to">give way to</span> the new, and it is not possible to <span class="hl" data-w="preserve">preserve</span> everything from our past as we move towards the future. Finding and keeping the right <span class="hl" data-w="balance">balance</span> between progress and the protection of cultural sites can be a big challenge.</p>
+      <p>Big challenges, however, can sometimes lead to great solutions. In the 1950s, the Egyptian government wanted to build a new dam across the Nile in order to control floods, produce electricity, and supply water to more farmers. But the <span class="hl" data-w="proposal">proposal</span> led to <span class="hl" data-w="protest">protests</span>. Water from the dam would likely damage a number of <span class="hl" data-w="temple">temples</span> and destroy cultural <span class="hl" data-w="relic">relics</span> that were an important part of Egypt's cultural <span class="hl" data-w="heritage">heritage</span>. After listening to the scientists who had studied the problem, and citizens who lived near the dam, the government <span class="hl" data-w="turn to">turned to</span> the United Nations for help in 1959.</p>
+      <p>A <span class="hl" data-w="committee">committee</span> was <span class="hl" data-w="establish">established</span> to <span class="hl" data-w="limit">limit</span> damage to the Egyptian buildings and <span class="hl" data-w="prevent">prevent</span> the <span class="hl" data-w="loss">loss</span> of cultural relics. The group asked for contributions from different departments and raised <span class="hl" data-w="fund">funds</span> within the international community. Experts investigated the issue, conducted several tests, and then made a proposal. Finally, a document was signed, and the work began in 1960.</p>
+      <p>The project brought together governments and environmentalists from around the world. Temples and other cultural sites were taken down piece by piece, and then moved and put back together again in a place where they were safe from the water. Over the next 20 years, thousands of engineers and workers rescued 22 temples. Fifty countries <span class="hl" data-w="donate">donated</span> nearly $80 million to the project.</p>
+    </div>
+  </div>
+  <div id="a-grammar" class="card st-panel" style="display:none">
+    <h2>语法聚焦 <span class="tag">限制性定语从句</span></h2>
+    <div class="sub">Restrictive Attributive Clauses</div>
+    <div class="gram-box"><p><b>构成：</b>先行词 + 关系词（who / which / that / whose / where / when）+ 从句</p><p><b>作用：</b>对先行词限定说明，不可省略。</p></div>
+    <div class="gram-box">
+      <div class="ex en">…the scientists <u>who</u> had studied the problem… <span style="color:var(--muted);font-size:13px">who 指人，作主语</span></div>
+      <div class="ex en">…relics <u>that</u> were an important part of Egypt's heritage… <span style="color:var(--muted);font-size:13px">that 指物，作主语</span></div>
+      <div class="ex en">…a place <u>where</u> they were safe from the water. <span style="color:var(--muted);font-size:13px">where 指地点，作状语</span></div>
+    </div>
+  </div>
+
+  <div id="a-practice" class="card st-panel" style="display:none">
+    <h2>词汇闪卡 <span class="tag">12 词</span></h2>
+    <div class="fc-wrap">
+      <div class="flash" id="flash"><div class="inner">
+        <div class="face front"><div class="word en" id="fcWord">heritage</div><div class="ipa en" id="fcIpa"></div><div style="color:var(--muted);font-size:12px;margin-top:12px">点击翻面</div></div>
+        <div class="face back"><div class="pos" id="fcPos"></div><div class="gloss" id="fcGloss"></div><div style="font-size:12px;margin-top:8px;opacity:.8">点击返回</div></div>
+      </div></div>
+      <div class="fc-nav">
+        <button class="btn ghost" id="fcNo" style="border-color:var(--red);color:var(--red)">😕 模糊</button>
+        <div class="fc-count" id="fcCount">1 / 12</div>
+        <button class="btn ghost" id="fcYes" style="border-color:var(--green);color:var(--green)">✓ 认识</button>
+      </div>
+    </div>
+    <h2 style="margin-top:18px">课文理解</h2><div id="a-rc"></div>
+    <h2 style="margin-top:18px">语法填空 <span class="tag">关系词</span></h2><div id="a-gf"></div>
+  </div>
+
+  <div id="a-test" class="card st-panel" style="display:none">
+    <h2>单元小测 <span class="tag">10 题 · 限时 8 分钟</span></h2>
+    <div id="testIntro" style="text-align:center;padding:24px">
+      <div style="font-size:17px;margin-bottom:6px">📝 本单元综合测验</div>
+      <div style="color:var(--muted);font-size:14px;margin-bottom:18px">10 题 · 限时 8 分钟 · 综合考查词汇、语法与阅读</div>
+      <button class="btn" id="startTest">开始测验</button>
+    </div>
+    <div id="testBody" style="display:none">
+      <div class="score-line"><span>仿高考题型</span><b class="timer" id="timer">08:00</b></div>
+      <div id="testArea"></div><div id="testResult"></div>
+      <div style="margin-top:14px;text-align:center"><button class="btn" id="submitTest">交卷评分</button> <button class="btn ghost" id="retakeTest" style="display:none">重新测验</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ B 轨 ============ -->
+<div class="panel" data-track-panel="b">
+  <div id="b-read" class="card st-panel">
+    <h2>阅读理解 <span class="tag b">高考题型</span> <span class="tag hard">难度★★★</span></h2>
+    <div class="sub">推理判断 + 词义猜测（含形近陷阱）+ 观点态度 + 最佳标题。</div>
+    <div class="score-line"><span>满分 8 分</span><b id="b-rcScore">—</b></div>
+    <div class="passage en" id="b-rcPassage"></div>
+    <div id="b-rc"></div>
+  </div>
+  <div id="b-qxw" class="card st-panel" style="display:none">
+    <h2>七选五 <span class="tag b">高考题型</span></h2>
+    <div class="sub">先点选项、再点空格填入。</div>
+    <div class="score-line"><span>满分 10 分</span><b id="b-qxwScore">—</b></div>
+    <div class="passage en" id="b-qxwPassage"></div>
+    <div style="margin-top:12px;font-size:13px;color:var(--muted)">备选项：</div>
+    <div id="b-qxwOpts"></div>
+    <div style="margin-top:12px"><button class="btn" id="b-qxwCheck">检查答案</button> <button class="btn ghost" id="b-qxwReset">重置</button></div>
+    <div id="b-qxwFb" class="feedback"></div>
+  </div>
+  <div id="b-cloze" class="card st-panel" style="display:none">
+    <h2>完形填空 <span class="tag b">高考题型</span> <span class="tag hard">难度★★★★</span></h2>
+    <div class="sub">10 空，每空 4 选 1。</div>
+    <div class="score-line"><span>满分 15 分</span><b id="b-clScore">—</b></div>
+    <div class="passage en" id="b-clPassage"></div>
+    <div id="b-cl"></div>
+  </div>
+  <div id="b-grammar" class="card st-panel" style="display:none">
+    <h2>语法填空 <span class="tag b">高考题型</span></h2>
+    <div class="sub">10 空。提示词规则：仅变形题给原词；关系词/连词/代词/冠词为纯空。</div>
+    <div class="score-line"><span>满分 15 分</span><b id="b-grScore">—</b></div>
+    <div class="passage en" id="b-grPassage"></div>
+    <div style="margin-top:12px;text-align:center"><button class="btn" id="b-grCheck">提交评分</button></div>
+    <div id="b-grFb"></div>
+  </div>
+  <div id="b-writing" class="card st-panel" style="display:none">
+    <h2>应用文写作 <span class="tag b">高考题型</span></h2>
+    <div class="sub">满分 15 分。建议先列提纲，再对照范文。</div>
+    <div class="gram-box"><b>【题目】</b> 假定你是李华。英国笔友 Chris 来信说他计划来中国旅游，想参观一处世界文化遗产，请你推荐一处并简要介绍。内容包括：1. 推荐一处遗产；2. 简述理由；3. 表达祝愿。词数 80 左右。</div>
+    <button class="btn ghost" id="b-showModel">📖 显示范文与评分标准</button>
+    <div class="model" id="b-model"></div>
+  </div>
+</div>
+
+<!-- ============ 总评 ============ -->
+<div class="panel" data-track-panel="r">
+  <div class="card">
+    <h2>综合掌握度 <span class="tag">融合 A + B 两轨</span> <span class="ratio">高一 · A70% / B30%</span></h2>
+    <div class="sub">数据来自你在 A轨 与 B轨 的全部作答，跨轨共享。</div>
+    <div class="kpi" id="kpis"></div>
+    <div class="radar-wrap"><div><canvas id="radar" width="300" height="300"></canvas></div>
+      <div class="legend" id="legend"></div></div>
+    <div class="tip" style="margin-top:14px">💡 综合分按高一比重加权：<b>A轨 ×0.7 + B轨 ×0.3</b>。薄弱维度会提示你回对应轨道巩固。</div>
+  </div>
+  <div class="card">
+    <h2>错题本（A+B 合并）<span class="tag" id="errTag">0 题</span></h2>
+    <div class="errlist" id="errList"><div class="tip">暂无错题。</div></div>
+  </div>
+</div>
+</main>
+<footer>高中英语助手 · 必修2 Unit 1 · A/B双轨 · 进度保存在本机浏览器</footer>
+
+<script>
+/* ════════ 数据 ════════ */
+const VOCAB=[
+ {word:"heritage",ipa:"/ˈherɪtɪdʒ/",pos:"n.",gloss:"遗产（国家或社会长期形成并传承的）"},
+ {word:"temple",ipa:"/ˈtempl/",pos:"n.",gloss:"庙；寺"},
+ {word:"relic",ipa:"/ˈrelɪk/",pos:"n.",gloss:"遗物；遗迹"},
+ {word:"preserve",ipa:"/prɪˈzɜːv/",pos:"vt.",gloss:"保存；保护；维持"},
+ {word:"promote",ipa:"/prəˈməʊt/",pos:"vt.",gloss:"促进；提升；推销"},
+ {word:"establish",ipa:"/ɪˈstæblɪʃ/",pos:"vt.",gloss:"建立；创立"},
+ {word:"committee",ipa:"/kəˈmɪti/",pos:"n.",gloss:"委员会"},
+ {word:"contribute",ipa:"/kənˈtrɪbjuːt/",pos:"v.",gloss:"捐献；贡献"},
+ {word:"investigate",ipa:"/ɪnˈvestɪɡeɪt/",pos:"v.",gloss:"调查；研究"},
+ {word:"proposal",ipa:"/prəˈpəʊzl/",pos:"n.",gloss:"提议；建议"},
+ {word:"protest",ipa:"/ˈprəʊtest/",pos:"n./v.",gloss:"抗议"},
+ {word:"balance",ipa:"/ˈbæləns/",pos:"n.",gloss:"平衡；均匀"}
+];
+const LOOKUP={"give way to":"给……让路；被……取代","preserve":"保存；保护","balance":"平衡","proposal":"提议；建议","protest":"抗议","temple":"庙；寺","relic":"遗迹；遗物","heritage":"遗产","turn to":"向……求助","committee":"委员会","establish":"建立","limit":"限制","prevent":"阻止","loss":"损失","fund":"基金；专款","donate":"捐献"};
+/* A轨 课文理解 + 语法填空 + 小测 */
+const A_RC=[
+ {q:"Why did the Egyptian government want to build a new dam?",opts:["To protect cultural relics","To control floods and produce electricity","To attract tourists","To compete with other countries"],a:1,why:"课文：in order to control floods, produce electricity, and supply water."},
+ {q:"Why did the proposal lead to protests?",opts:["The dam was too expensive","Water would damage temples and destroy cultural relics","Local people refused to move","The UN opposed it"],a:1,why:"课文：Water from the dam would likely damage temples and destroy cultural relics."},
+ {q:"Who did the government turn to for help in 1959?",opts:["German engineers","The United Nations","Local citizens","Fifty countries"],a:1,why:"课文：the government turned to the United Nations for help in 1959."},
+ {q:"How many temples were rescued?",opts:["22","20","50","1961"],a:0,why:"课文：rescued 22 temples."},
+ {q:"What is the main lesson of the project?",opts:["Economic development must stop","Countries can work together to protect cultural heritage","Big dams are always bad","The UN is useless"],a:1,why:"课文末：countries can work together to build a better tomorrow."}
+];
+const A_GF=[
+ {pre:"The scientists ",post:" had studied the problem were respected.",a:"who",hint:"指人，作主语"},
+ {pre:"Cultural relics ",post:" were an important part of Egypt's heritage were saved.",a:"that",hint:"指物，作主语（that/which）",alt:["which"]},
+ {pre:"They moved the temples to a place ",post:" they were safe from the water.",a:"where",hint:"指地点，作状语"},
+ {pre:"The committee ",post:" task was to limit damage raised funds internationally.",a:"whose",hint:"表所属关系"}
+];
+const A_TEST=[
+ {t:"c",q:"The old temple must be ____; it is part of our cultural heritage.",opts:["destroyed","preserved","ignored","forgotten"],a:1},
+ {t:"c",q:"Fifty countries ____ nearly $80 million to the project.",opts:["donated","limited","protested","investigated"],a:0},
+ {t:"c",q:"选出含限制性定语从句的句子：",opts:["The temple, built in 1960, still stands.","The relics that were saved are now safe.","In 1980, the project ended.","Big challenges lead to great solutions."],a:1},
+ {t:"f",q:"A committee was established ____ (limit) the damage.",a:"to limit"},
+ {t:"f",q:"The scientists ____ had studied the problem helped a lot.（关系词）",a:"who"},
+ {t:"f",q:"They moved the temples to a place ____ they were safe.（关系词）",a:"where"},
+ {t:"c",q:"The word heritage most probably means ____.",opts:["遗产","抗议","平衡","基金"],a:0},
+ {t:"c",q:"The project is considered a success because ____.",opts:["it was cheap","countries worked together to protect the past while building the future","it was finished quickly","no temples were moved"],a:1},
+ {t:"f",q:"Water from the dam would ____ (probable) damage the temples.（变为副词）",a:"probably"},
+ {t:"c",q:"Give way to in the text is closest in meaning to ____.",opts:["give up","be replaced by / yield to","give a hand","give back"],a:1}
+];
+/* B轨 阅读 + 七选五 + 完形 + 语法 + 范文 */
+const B_RC_PASSAGE=`<p>For many people, cultural heritage brings to mind grand monuments behind glass ropes. Yet the most endangered forms of heritage are often the least visible: a dying dialect, a craft that no young hand cares to learn, a festival whose original meaning has faded. Unlike a crumbling wall, such heritage leaves nothing to repair once its last practitioner is gone.</p><p>This forces us to rethink what protection truly means. Pouring money into a restored temple is comparatively easy; far harder is convincing a teenager that an ancestral song is worth learning when pop culture shines so much brighter. Heritage is saved not by fences but by relevance — by making the past feel necessary to the present.</p><p>Some communities have grasped this. In certain mountain villages, traditional weaving has been paired with modern design, turning old skills into new incomes. Critics, however, warn that such commercialization risks turning culture into a product, stripping it of its sacred meaning the moment a price tag is attached.</p><p>There are no easy answers. Heritage protection can no longer be left to experts alone. The real challenge is this: how do we keep a tradition breathing without turning it into a performance?</p>`;
+const B_RC=[
+ {q:"The author mentions a dying dialect and a craft no young hand cares to learn mainly to ____.",opts:["prove monuments are no longer worth protecting","show intangible heritage is uniquely irreplaceable once lost","blame young people for losing interest","compare the economic value of dialects and crafts"],a:1,why:"首段强调无形遗产最濒危，且传承人去世便无可修复。"},
+ {q:"The underlined word relevance in Paragraph 2 is closest in meaning to ____.",opts:["relationship","connection to present life","historical accuracy","financial value"],a:1,why:"破折号后解释＝making the past feel necessary to the present；relationship是形近干扰。"},
+ {q:"What is the author's attitude toward combining weaving with modern design?",opts:["Strongly supportive, ignoring all concerns","Cautiously approving while aware of the risks","Strongly opposed","Completely indifferent"],a:1,why:"既肯定成效又客观呈现批评者担忧，态度审慎支持。"},
+ {q:"Which is the best title?",opts:["How to Repair Ancient Temples","Heritage: More Than Walls, Saved by People","The Profitable Business of Heritage","Why Modern Design Saves Traditions"],a:1,why:"全文核心：遗产不止有形，保护靠 relevance 与普通人。"}
+];
+const B_QXW_OPTS=["A. This is especially true of intangible heritage.","B. Otherwise, many traditions will quietly disappear.","C. However, true protection starts with understanding.","D. Therefore, we should protect heritage in many ways.","E. For example, ancient buildings need careful repair.","F. It also means respecting what we have inherited.","G. Only in this way can heritage survive and continue to live."];
+const B_QXW_ANS=[2,5,0,1,6];
+const B_QXW_TEXT=["Heritage protection is often seen as the work of experts. ____ Without knowing why a tradition matters, people will not feel the need to save it.","Education plays a key role. Schools and museums can help young people see the value of what their ancestors left behind. ____","Protection is not only about keeping things unchanged. ____ It means making heritage part of modern life.","Money and technology are still necessary. ____ Without support, even willing volunteers can do little.","Protecting heritage is a shared duty. ____ Then future generations will enjoy it as we do today."];
+const B_CLOZE_LEAD="A young engineer, Maria, was sent to a mountain village to help preserve an old temple. The temple, which had stood for over 600 years, was in danger. At first, the villagers were doubtful. Maria did not get angry; instead, she listened carefully to their stories and wrote down every detail.";
+const B_CLOZE_BODY=" Slowly, she won their trust. She encouraged the villagers to form a repair team and taught them basic skills. When a heavy storm damaged the roof, everyone worked through the night. With the help of the whole village, the temple was finally restored. Maria realized the most valuable thing she had preserved was not the building itself, but the trust among people. Protecting heritage, she often said, is less about stones than about the bonds that hold a community together.";
+const B_CLOZE=[{q:"The temple, which had ____ for over 600 years, was in danger.",opts:["built","stood","sold","fallen"],a:1},{q:"Maria did not get ____.",opts:["angry","paid","tired","lost"],a:0},{q:"she listened carefully and ____ down every detail.",opts:["broke","wrote","turned","cut"],a:1},{q:"She ____ the villagers to form a repair team.",opts:["ordered","warned","encouraged","forced"],a:2},{q:"When a storm damaged the roof, everyone ____ through the night.",opts:["slept","worked","cried","left"],a:1},{q:"____ the help of the whole village, the temple was restored.",opts:["Without","For","Beyond","Despite"],a:1},{q:"not the building ____.",opts:["itself","myself","herself","yourself"],a:0},{q:"but the ____ among people.",opts:["trust","money","fear","doubt"],a:0},{q:"less about stones ____ about bonds.",opts:["or","and","so","than"],a:1},{q:"the bonds that ____ a community together.",opts:["break","hold","tear","pull"],a:1}];
+const B_NG_PASSAGE="Mount Tai was listed by UNESCO in 1987 as <1> World Heritage Site, in order <2> its cultural value. A committee was soon established to limit damage and protect the ancient temples. The experts <3> investigated the mountain understood the <4> of involving local people, because no plan can succeed without their support. If the relics are not treated <5>, tourism may slowly destroy them. Today the mountain <6> millions of visitors every year, and protecting <7> has become a shared duty <8> benefits the whole region. We must remember <9> heritage is not only about the past, <10> also about the future.";
+const B_NG=[{a:"a",base:""},{a:"to preserve",base:"preserve"},{a:"who",base:""},{a:"importance",base:"important"},{a:"correctly",base:"correct"},{a:"attracts",base:"attract"},{a:"it",base:""},{a:"which",base:""},{a:"that",base:""},{a:"but",base:""}];
+const B_MODEL=`Dear Chris,
+
+I am glad to hear you are coming to China. If you want to visit a world cultural heritage site, I strongly recommend the Great Wall.
+
+As one of the greatest wonders of the world, the Great Wall has a history of over 2,000 years. It stretches across northern China and was once built to defend the country. Walking along it, you will not only enjoy the breathtaking mountain views but also feel the weight of history in every stone.
+
+I hope you will have an unforgettable journey. Let me know if you need more help!
+
+Yours,
+Li Hua
+
+【评分要点】① 内容完整（推荐+理由+祝愿）5 分　② 词汇与句式（定语从句等）5 分　③ 连贯（过渡词）3 分　④ 语法准确 2 分`;
+
+/* ════════ 状态（容错 + 统一key） ════════ */
+let ST={a:{vocab:{},errors:[],scores:{rc:[],gf:[],test:[]}},b:{scores:{rc:[],qxw:null,cl:[],gr:null,writing:null},errors:[]}};
+try{const r=localStorage.getItem("pep_b2_u1");if(r){const p=JSON.parse(r);ST.a=Object.assign(ST.a,p.a||{});ST.b=Object.assign(ST.b,p.b||{});ST.a.errors=ST.a.errors||[];ST.a.scores=ST.a.scores||{rc:[],gf:[],test:[]};ST.b.errors=ST.b.errors||[];ST.b.scores=ST.b.scores||{rc:[],qxw:null,cl:[],gr:null};}}catch(e){}
+function save(){try{localStorage.setItem("pep_b2_u1",JSON.stringify(ST))}catch(e){}}
+function addErr(track,type,q,ans){const arr=track==="a"?ST.a.errors:ST.b.errors;if(arr.some(e=>e.q===q&&e.type===type))return;arr.push({track,type,q,ans});save();}
+
+/* ════════ 顶层轨道切换 ════════ */
+const SUBS={a:[["学","learn"],["练","practice"],["考","test"]],b:[["阅读","read"],["七选五","qxw"],["完形","cloze"],["语法","grammar"],["写作","writing"]],r:[]};
+let curTrack="a",curSub="learn";
+function renderSubtabs(){
+  const box=document.getElementById("subtabs");box.innerHTML="";
+  document.body.classList.remove("theme-a","theme-b","theme-r");
+  document.body.classList.add("theme-"+curTrack);
+  SUBS[curTrack].forEach(([label,id])=>{
+    const b=document.createElement("button");b.className="st"+(id===curSub?" active":"");b.textContent=label;
+    b.onclick=()=>{curSub=id;document.querySelectorAll('[data-track-panel="'+curTrack+'"] .st-panel').forEach(p=>p.style.display="none");document.getElementById(curTrack+"-"+id).style.display="block";renderSubtabs();};
+    box.appendChild(b);
+  });
+}
+document.querySelectorAll(".tt").forEach(t=>t.onclick=()=>{
+  curTrack=t.dataset.track;
+  document.querySelectorAll(".tt").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+  document.querySelectorAll("[data-track-panel]").forEach(p=>p.classList.remove("active"));
+  document.querySelector('[data-track-panel="'+curTrack+'"]').classList.add("active");
+  if(curTrack==="a"){curSub="learn";}
+  else if(curTrack==="b"){curSub="read";}
+  else{renderReport();}
+  if(curTrack!=="r"){document.querySelectorAll('[data-track-panel="'+curTrack+'"] .st-panel').forEach(p=>p.style.display="none");
+    const first=SUBS[curTrack][0][1];document.getElementById(curTrack+"-"+first).style.display="block";curSub=first;}
+  renderSubtabs();
+});
+renderSubtabs();
+
+/* 单元选择(仅b2-u1可用) */
+document.getElementById("unitPicker").onchange=function(){if(this.value!=="b2-u1"){alert("该单元尚在开发中，敬请期待。目前可用：必修2 Unit 1");this.value="b2-u1";}};
+
+/* ════════ 通用渲染 ════════ */
+function choice(container,item,idx,onDone,track){
+  const div=document.createElement("div");div.className="q";
+  let stemText,optTexts;
+  if(item.opts&&item.opts.length){stemText=item.q;optTexts=item.opts;}
+  else{const ps=item.q.split(/\s{2,}/);optTexts=ps;stemText="";}
+  const stem=document.createElement("div");stem.className="stem";stem.innerHTML=`<span class="n">${idx+1}</span>${stemText}`;div.appendChild(stem);
+  const oe=document.createElement("div");oe.className="opts";
+  optTexts.forEach((tx,i)=>{
+    const b=document.createElement("div");b.className="opt";b.innerHTML=tx;
+    b.onclick=()=>{if(oe.dataset.lock)return;oe.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel","ok","no"));b.classList.add("sel");oe.dataset.lock="1";
+      const right=i===item.a;b.classList.add(right?"ok":"no");
+      if(!right){oe.children[item.a].classList.add("ok");const fb=document.createElement("div");fb.className="feedback show wrong";fb.innerHTML="✗ "+(item.why||("正确答案："+optTexts[item.a]));div.appendChild(fb);addErr(track,item.kind||"选择题",stemText.slice(0,40)||("Q"+(idx+1)),optTexts[item.a]);}
+      else{const fb=document.createElement("div");fb.className="feedback show right";fb.innerHTML="✓ 正确";div.appendChild(fb);}
+      onDone(right);};
+    oe.appendChild(b);});
+  div.appendChild(oe);container.appendChild(div);
+}
+function fill(container,item,idx,onDone,track){
+  const div=document.createElement("div");div.className="q";
+  let pre,post;
+  if(item.q){const p=item.q.split("____");pre=p[0];post=p[1]||"";}
+  else{pre=item.pre||"";post=item.post||"";}
+  const stem=document.createElement("div");stem.className="stem";stem.innerHTML=`<span class="n">${idx+1}</span>`;
+  const sp=document.createElement("span");sp.innerHTML=pre;
+  const inp=document.createElement("input");inp.className="fill en";inp.size=8;
+  const sp2=document.createElement("span");sp2.innerHTML=post+(item.hint?` <span style="color:var(--muted);font-size:13px">(${item.hint})</span>`:"");
+  stem.appendChild(sp);stem.appendChild(inp);stem.appendChild(sp2);div.appendChild(stem);
+  const ans=(item.a||"").toLowerCase().split("/");const alts=(item.alt||[]).map(x=>x.toLowerCase());
+  const btn=document.createElement("button");btn.className="btn";btn.style.marginTop="8px";btn.textContent="提交";
+  function chk(){const v=inp.value.trim().toLowerCase();const right=ans.includes(v)||alts.includes(v);inp.disabled=true;btn.disabled=true;inp.style.borderColor=right?"var(--green)":"var(--red)";inp.style.color=right?"var(--green)":"var(--red)";
+    const fb=document.createElement("div");fb.className="feedback show "+(right?"right":"wrong");fb.innerHTML=right?"✓ 正确":("✗ 正确答案："+(item.a));div.appendChild(fb);onDone(right);}
+  btn.onclick=chk;inp.onkeydown=e=>{if(e.key==="Enter")chk();};
+  div.appendChild(btn);container.appendChild(div);
+}
+
+/* ════════ A轨 ════════ */
+// 课文点词
+let pop;
+document.querySelectorAll(".hl").forEach(el=>el.onclick=e=>{if(pop)pop.remove();pop=document.createElement("div");pop.className="pop";pop.innerHTML=`<div class="pw">${el.dataset.w}</div>${LOOKUP[el.dataset.w]||"（无）"}`;document.body.appendChild(pop);const r=el.getBoundingClientRect();pop.style.left=Math.min(r.left,innerWidth-240)+"px";pop.style.top=(r.top-50<0?r.bottom+8:r.top-50)+"px";setTimeout(()=>{if(pop)pop.remove()},3000);});
+// 闪卡
+let fcIdx=0;const flash=document.getElementById("flash");
+function renderFC(){const v=VOCAB[fcIdx];document.getElementById("fcWord").textContent=v.word;document.getElementById("fcIpa").textContent=v.ipa;document.getElementById("fcPos").textContent=v.pos;document.getElementById("fcGloss").textContent=v.gloss;document.getElementById("fcCount").textContent=(fcIdx+1)+" / "+VOCAB.length;flash.classList.remove("flip");}
+flash.onclick=()=>flash.classList.toggle("flip");
+document.getElementById("fcYes").onclick=()=>{ST.a.vocab[VOCAB[fcIdx].word]=1;save();nextFC();};
+document.getElementById("fcNo").onclick=()=>{ST.a.vocab[VOCAB[fcIdx].word]=0;save();nextFC();};
+function nextFC(){fcIdx=(fcIdx+1)%VOCAB.length;renderFC();}
+renderFC();
+// A 课文理解 + 语法填空
+(function(){const c=document.getElementById("a-rc");A_RC.forEach((it,i)=>choice(c,it,i,r=>{ST.a.scores.rc[i]=r?1:0;save();},"a"));
+  const g=document.getElementById("a-gf");A_GF.forEach((it,i)=>fill(g,it,i,r=>{ST.a.scores.gf[i]=r?1:0;if(!r)addErr("a","语法填空",it.pre+"____"+it.post,it.a);save();},"a"));})();
+// A 小测
+let testTimer;
+function buildTest(){const area=document.getElementById("testArea");area.innerHTML="";document.getElementById("testResult").innerHTML="";document.getElementById("submitTest").style.display="";document.getElementById("retakeTest").style.display="none";
+  A_TEST.forEach((it,i)=>{if(it.t==="c")choice(area,it,i,r=>{it._r=r;if(!r)addErr("a","小测",it.q,it.opts[it.a]);},"a");else fill(area,it,i,r=>{it._r=r;if(!r)addErr("a","小测",it.q,it.a);},"a");});
+  let left=8*60;const tEl=document.getElementById("timer");clearInterval(testTimer);testTimer=setInterval(()=>{left--;if(left<=0){clearInterval(testTimer);submitTest();}tEl.textContent=String(Math.floor(left/60)).padStart(2,"0")+":"+String(left%60).padStart(2,"0");},1000);}
+function submitTest(){clearInterval(testTimer);const sc=A_TEST.filter(x=>x._r).length;ST.a.scores.test=ST.a.scores.test||[];ST.a.scores.test.push(sc);save();document.getElementById("submitTest").style.display="none";document.getElementById("retakeTest").style.display="";document.getElementById("testResult").innerHTML=`<div style="text-align:center;padding:18px"><div style="font-size:40px;font-weight:800;color:var(--primary);font-family:Georgia,serif">${sc}<span style="font-size:18px;color:var(--muted)"> / 10</span></div><div style="color:var(--muted);margin-top:4px">${sc>=8?"🎉 优秀":sc>=6?"👍 良好":"💪 继续加油"}</div></div>`;}
+document.getElementById("startTest").onclick=()=>{document.getElementById("testIntro").style.display="none";document.getElementById("testBody").style.display="block";buildTest();};
+document.getElementById("submitTest").onclick=submitTest;
+document.getElementById("retakeTest").onclick=()=>buildTest();
+
+/* ════════ B轨 ════════ */
+document.getElementById("b-rcPassage").innerHTML=B_RC_PASSAGE;
+(function(){const c=document.getElementById("b-rc");B_RC.forEach((it,i)=>choice(c,it,i,r=>{ST.b.scores.rc[i]=r?1:0;save();updBRc();},"b"));})();
+function updBRc(){const g=ST.b.scores.rc.filter(x=>x===1).length;document.getElementById("b-rcScore").textContent=ST.b.scores.rc.length===B_RC.length?(g*2)+" / 8":"—";}
+updBRc();
+// 七选五
+(function(){let html="";B_QXW_TEXT.forEach((p,i)=>{html+=`<p>${p.replace("____",`<span class="qxw-blank" data-blank="${i}" id="qxwB${i}">［空${i+1}］</span>`)}</p>`;});document.getElementById("b-qxwPassage").innerHTML=html;
+  const oc=document.getElementById("b-qxwOpts");B_QXW_OPTS.forEach((op,i)=>{const b=document.createElement("span");b.className="qxw-opt";b.textContent=op;b.onclick=()=>pickOpt(i);oc.appendChild(b);});})();
+let pickedOpt=null;const assign={};
+function pickOpt(i){document.querySelectorAll(".qxw-opt").forEach(x=>x.classList.remove("picked"));for(let k in assign){if(assign[k]==i){delete assign[k];const el=document.getElementById("qxwB"+k);el.textContent="［空"+(parseInt(k)+1)+"］";el.classList.remove("filled","ok","no");}}document.querySelectorAll(".qxw-opt")[i].classList.add("picked");pickedOpt=i;
+  document.querySelectorAll(".qxw-blank").forEach(b=>{b.onclick=()=>{if(pickedOpt===null)return;assign[b.dataset.blank]=pickedOpt;b.textContent=B_QXW_OPTS[pickedOpt];b.classList.add("filled");document.querySelectorAll(".qxw-opt").forEach(x=>x.classList.remove("picked"));document.querySelectorAll(".qxw-opt").forEach((x,ii)=>x.classList.toggle("used",Object.values(assign).includes(ii)));pickedOpt=null;};});}
+document.getElementById("b-qxwCheck").onclick=()=>{let c=0;for(let i=0;i<5;i++){const el=document.getElementById("qxwB"+i);el.classList.remove("ok","no");if(Number(assign[i])===B_QXW_ANS[i]){el.classList.add("ok");c++;}else{el.classList.add("no");el.textContent=(el.textContent)+" → "+B_QXW_OPTS[B_QXW_ANS[i]];addErr("b","七选五","第"+(i+1)+"空",B_QXW_OPTS[B_QXW_ANS[i]]);}}ST.b.scores.qxw=c*2;save();document.getElementById("b-qxwScore").textContent=c*2+" / 10";const fb=document.getElementById("b-qxwFb");fb.className="feedback show "+(c>=4?"right":"wrong");fb.innerHTML=c+"/5 正确";};
+document.getElementById("b-qxwReset").onclick=()=>{for(let k in assign)delete assign[k];document.querySelectorAll(".qxw-blank").forEach((b,i)=>{b.textContent="［空"+(i+1)+"］";b.classList.remove("filled","ok","no");});document.querySelectorAll(".qxw-opt").forEach(x=>x.classList.remove("used","picked"));pickedOpt=null;};
+// 完形
+document.getElementById("b-clPassage").innerHTML=`<p>${B_CLOZE_LEAD}${B_CLOZE_BODY}</p>`;
+(function(){const c=document.getElementById("b-cl");B_CLOZE.forEach((it,i)=>{const w={q:it.q,opts:it.opts,a:it.a,kind:"完形"};choice(c,w,i,r=>{ST.b.scores.cl[i]=r?1:0;save();updBCl();},"b");});})();
+function updBCl(){const g=ST.b.scores.cl.filter(x=>x===1).length;document.getElementById("b-clScore").textContent=ST.b.scores.cl.length===B_CLOZE.length?Math.round(g/B_CLOZE.length*15)+" / 15":"—";}
+updBCl();
+// 语法填空
+(function(){let html="<p>";let last=0;const re=/<(\d+)>/g;let m;while((m=re.exec(B_NG_PASSAGE))){html+=B_NG_PASSAGE.slice(last,m.index);const idx=parseInt(m[1])-1;const bl=B_NG[idx];const hint=bl.base?"("+bl.base+")":"";html+=` <input class="fill bgr" data-idx="${idx}" placeholder="${idx+1}" size="6"> <span style="color:var(--muted);font-size:13px">${hint}</span> `;last=re.lastIndex;}html+=B_NG_PASSAGE.slice(last)+"</p>";document.getElementById("b-grPassage").innerHTML=html;})();
+document.getElementById("b-grCheck").onclick=()=>{let c=0;const det=[];document.querySelectorAll(".fill.bgr").forEach(inp=>{const idx=parseInt(inp.dataset.idx);const ans=B_NG[idx].a.toLowerCase();const v=inp.value.trim().toLowerCase();const ok=ans.split("/").includes(v);inp.style.borderColor=ok?"var(--green)":"var(--red)";inp.style.color=ok?"var(--green)":"var(--red)";if(ok)c++;else{det.push("第"+(idx+1)+"空→"+ans);addErr("b","语法填空","第"+(idx+1)+"空",ans);}inp.disabled=true;});ST.b.scores.gr=c;save();document.getElementById("b-grScore").textContent=Math.round(c/10*15)+" / 15";const fb=document.getElementById("b-grFb");fb.className="feedback show "+(c>=6?"right":"wrong");fb.innerHTML=c+"/10 正确"+(det.length?"<br>"+det.join("；"):"");};
+// 写作
+document.getElementById("b-showModel").onclick=function(){const m=document.getElementById("b-model");m.classList.toggle("show");m.textContent=B_MODEL;this.textContent=m.classList.contains("show")?"📖 收起范文":"📖 显示范文与评分标准";if(!ST.b.scores.writing){ST.b.scores.writing="opened";save();}};
+
+/* ════════ 总评（融合） ════════ */
+function mastery(){
+  const aVocab=VOCAB.length?Math.round(Object.values(ST.a.vocab).filter(x=>x===1).length/VOCAB.length*100):0;
+  const aRc=ST.a.scores.rc.length===A_RC.length?Math.round(ST.a.scores.rc.filter(x=>x===1).length/A_RC.length*100):0;
+  const aGf=ST.a.scores.gf.length===A_GF.length?Math.round(ST.a.scores.gf.filter(x=>x===1).length/A_GF.length*100):0;
+  const aTest=ST.a.scores.test&&ST.a.scores.test.length?Math.round(ST.a.scores.test[ST.a.scores.test.length-1]/A_TEST.length*100):0;
+  const bRc=ST.b.scores.rc.length===B_RC.length?Math.round(ST.b.scores.rc.filter(x=>x===1).length/B_RC.length*100):0;
+  const bCl=ST.b.scores.cl.length===B_CLOZE.length?Math.round(ST.b.scores.cl.filter(x=>x===1).length/B_CLOZE.length*100):0;
+  const bGr=ST.b.scores.gr!=null?Math.round(ST.b.scores.gr/10*100):0;
+  const bW=ST.b.scores.writing?60:0;
+  return{
+    vocab:Math.max(aVocab,Math.round((aVocab+bGr)/2*0.5+aVocab*0.5)),
+    reading:Math.round((aRc+bRc+bCl)/3),
+    grammar:Math.round((aGf+bGr)/2),
+    writing:Math.max(bW,Math.round(aTest*0.5)),
+    listening:0,
+    _a:{vocab:aVocab,rc:aRc,gf:aGf,test:aTest},_b:{rc:bRc,cl:bCl,gr:bGr,w:bW}
+  };
+}
+function drawRadar(m){
+  const labels=["词汇","阅读","语法","写作","听力"],vals=[m.vocab,m.reading,m.grammar,m.writing,m.listening];
+  const cv=document.getElementById("radar");const ctx=cv.getContext("2d");const cx=150,cy=150,R=95,n=labels.length;
+  const prim=getComputedStyle(document.body).getPropertyValue("--primary").trim()||"#9a5a2b";
+  ctx.clearRect(0,0,300,300);
+  for(let g=1;g<=4;g++){ctx.beginPath();for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n;const r=R*g/4;i?ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a));}ctx.closePath();ctx.strokeStyle="#e3d6c4";ctx.stroke();}
+  for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+R*Math.cos(a),cy+R*Math.sin(a));ctx.strokeStyle="#e3d6c4";ctx.stroke();}
+  ctx.beginPath();for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n;const r=R*vals[i]/100;i?ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a)):ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a));}ctx.closePath();ctx.fillStyle=prim+"59";ctx.fill();ctx.strokeStyle=prim;ctx.lineWidth=2;ctx.stroke();
+  ctx.fillStyle="#2b2420";ctx.font="13px sans-serif";ctx.textAlign="center";for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n;ctx.fillText(labels[i],cx+(R+16)*Math.cos(a),cy+(R+16)*Math.sin(a)+4);}
+  document.getElementById("legend").innerHTML=labels.map((l,i)=>`<div class="li"><span class="bar" style="background:hsl(${120-vals[i]*1.2},50%,45%)"></span>${l}：<b>${vals[i]}%</b></div>`).join("");
+}
+function renderReport(){
+  const m=mastery();
+  // 加权综合(高一 A70 B30): A综合=(词汇+阅读+语法+小测)/4, B综合=(阅读+完形+语法)/3
+  const aAll=Math.round((m._a.vocab+m._a.rc+m._a.gf+m._a.test)/4);
+  const bAll=Math.round((m._b.rc+m._b.cl+m._b.gr)/3);
+  const overall=Math.round(aAll*0.7+bAll*0.3);
+  const allErrs=[...ST.a.errors.map(e=>({...e,track:"a"})),...ST.b.errors.map(e=>({...e,track:"b"}))];
+  document.getElementById("errTag").textContent=allErrs.length+" 题";
+  document.getElementById("kpis").innerHTML=`<div class="k"><div class="v">${overall}%</div><div class="l">综合掌握（A×.7+B×.3）</div></div><div class="k"><div class="v">${aAll}%</div><div class="l">A轨 掌握</div></div><div class="k"><div class="v">${bAll}%</div><div class="l">B轨 掌握</div></div><div class="k"><div class="v">${allErrs.length}</div><div class="l">累计错题</div></div>`;
+  drawRadar(m);
+  const el=document.getElementById("errList");
+  if(!allErrs.length){el.innerHTML='<div class="tip">暂无错题。完成 A轨 或 B轨 的练习后，错题会自动汇总至此。</div>';return;}
+  el.innerHTML=allErrs.slice(-15).map(e=>`<div class="ei"><span class="et ${e.track}">${e.track==="a"?"A轨":"B轨"} ${e.type}</span>${e.q}<br>正确答案：<b style="color:var(--green)">${e.ans}</b></div>`).join("");
+  // 薄弱提示
+  const weak=[];if(m.vocab<70)weak.push("词汇→A轨 闪卡");if(m.grammar<70)weak.push("语法→A轨 语法聚焦 / B轨 语法填空");if(m.reading<70)weak.push("阅读→B轨 阅读理解");
+  if(weak.length)el.innerHTML+=`<div class="tip" style="margin-top:10px">📌 建议巩固：${weak.join("、")}</div>`;
+}
+</script>
+</body>
+</html>
